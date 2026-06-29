@@ -69,7 +69,16 @@ app.use((err, req, res, next) => {
 });
 
 // ─── Start Server ──────────────────────────────────────────
-app.listen(PORT, () => {
+const { getDatabase } = require('./db/database');
+
+app.listen(PORT, async () => {
+  try {
+    await getDatabase();
+    console.log('Database connected successfully.');
+  } catch (error) {
+    console.error('Failed to connect to database:', error);
+  }
+
   console.log(`
   ╔════════════════════════════════════════════════╗
   ║  🏭 CADMech Equipment Manager API             ║
