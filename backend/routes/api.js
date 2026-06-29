@@ -15,21 +15,32 @@
 
 const express = require('express');
 const router = express.Router();
+const { getDatabase } = require('../db/database');
 
 // ─── GET /api/equipment ────────────────────────────────────
-// List all equipment
-// Optional query params: ?search=keyword&type=CNC Machine&status=Active
 router.get('/equipment', async (req, res) => {
   try {
-    // TODO: Implement — fetch all equipment from database
-    // Support search, type filter, and status filter via query params
+    const db = await getDatabase();
+    let query = 'SELECT * FROM equipment WHERE 1=1';
+    const params = [];
 
-    // Example placeholder response (remove this and add your implementation):
-    res.json({
-      message: 'TODO: Implement GET /api/equipment',
-      query: req.query,
-      data: [],
-    });
+    if (req.query.search) {
+      query += ' AND name LIKE ?';
+      params.push(`%${req.query.search}%`);
+    }
+    if (req.query.type) {
+      query += ' AND type = ?';
+      params.push(req.query.type);
+    }
+    if (req.query.status) {
+      query += ' AND status = ?';
+      params.push(req.query.status);
+    }
+
+    query += ' ORDER BY created_at DESC';
+
+    const data = await db.all(query, params);
+    res.json({ data });
   } catch (error) {
     console.error('Error fetching equipment:', error);
     res.status(500).json({ error: 'Failed to fetch equipment' });
@@ -37,15 +48,16 @@ router.get('/equipment', async (req, res) => {
 });
 
 // ─── GET /api/equipment/:id ────────────────────────────────
-// Get a single equipment item by ID
 router.get('/equipment/:id', async (req, res) => {
   try {
-    // TODO: Implement — fetch single equipment by req.params.id
+    const db = await getDatabase();
+    const data = await db.get('SELECT * FROM equipment WHERE id = ?', [req.params.id]);
+    
+    if (!data) {
+      return res.status(404).json({ error: 'Equipment not found' });
+    }
 
-    res.json({
-      message: 'TODO: Implement GET /api/equipment/:id',
-      id: req.params.id,
-    });
+    res.json(data);
   } catch (error) {
     console.error('Error fetching equipment:', error);
     res.status(500).json({ error: 'Failed to fetch equipment' });
@@ -53,14 +65,10 @@ router.get('/equipment/:id', async (req, res) => {
 });
 
 // ─── POST /api/equipment ───────────────────────────────────
-// Create new equipment
-// Required fields: name, type, status
-// Optional fields: location, serial_number, description, installed_date
 router.post('/equipment', async (req, res) => {
   try {
     const { name, type, status, location, serial_number, description, installed_date } = req.body;
 
-    // TODO: Validate required fields
     if (!name || !type || !status) {
       return res.status(400).json({
         error: 'Validation Error',
@@ -68,45 +76,72 @@ router.post('/equipment', async (req, res) => {
       });
     }
 
-    // TODO: Insert into database and return the created record
+    const db = await getDatabase();
+    const result = await db.run(
+      `INSERT INTO equipment (name, type, status, location, serial_number, description, installed_date) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [name, type, status, location, serial_number, description, installed_date]
+    );
 
-    res.status(201).json({
-      message: 'TODO: Implement POST /api/equipment',
-      received: req.body,
-    });
+    const newEquipment = await db.get('SELECT * FROM equipment WHERE id = ?', [result.lastID]);
+    res.status(201).json(newEquipment);
   } catch (error) {
     console.error('Error creating equipment:', error);
+    if (error.message.includes('UNIQUE constraint failed')) {
+      return res.status(400).json({ error: 'Serial number must be unique' });
+    }
     res.status(500).json({ error: 'Failed to create equipment' });
   }
 });
 
 // ─── PUT /api/equipment/:id ────────────────────────────────
-// Update an existing equipment item
 router.put('/equipment/:id', async (req, res) => {
   try {
-    // TODO: Implement — update equipment by req.params.id with req.body
+    const { name, type, status, location, serial_number, description, installed_date } = req.body;
 
-    res.json({
-      message: 'TODO: Implement PUT /api/equipment/:id',
-      id: req.params.id,
-      updates: req.body,
-    });
+    if (!name || !type || !status) {
+      return res.status(400).json({
+        error: 'Validation Error',
+        message: 'name, type, and status are required fields',
+      });
+    }
+
+    const db = await getDatabase();
+    const existing = await db.get('SELECT id FROM equipment WHERE id = ?', [req.params.id]);
+    
+    if (!existing) {
+      return res.status(404).json({ error: 'Equipment not found' });
+    }
+
+    await db.run(
+      `UPDATE equipment 
+       SET name = ?, type = ?, status = ?, location = ?, serial_number = ?, description = ?, installed_date = ?, updated_at = CURRENT_TIMESTAMP
+       WHERE id = ?`,
+      [name, type, status, location, serial_number, description, installed_date, req.params.id]
+    );
+
+    const updatedEquipment = await db.get('SELECT * FROM equipment WHERE id = ?', [req.params.id]);
+    res.json(updatedEquipment);
   } catch (error) {
     console.error('Error updating equipment:', error);
+    if (error.message.includes('UNIQUE constraint failed')) {
+      return res.status(400).json({ error: 'Serial number must be unique' });
+    }
     res.status(500).json({ error: 'Failed to update equipment' });
   }
 });
 
 // ─── DELETE /api/equipment/:id ─────────────────────────────
-// Delete an equipment item
 router.delete('/equipment/:id', async (req, res) => {
   try {
-    // TODO: Implement — delete equipment by req.params.id
+    const db = await getDatabase();
+    const result = await db.run('DELETE FROM equipment WHERE id = ?', [req.params.id]);
 
-    res.json({
-      message: 'TODO: Implement DELETE /api/equipment/:id',
-      id: req.params.id,
-    });
+    if (result.changes === 0) {
+      return res.status(404).json({ error: 'Equipment not found' });
+    }
+
+    res.json({ message: 'Equipment deleted successfully', id: req.params.id });
   } catch (error) {
     console.error('Error deleting equipment:', error);
     res.status(500).json({ error: 'Failed to delete equipment' });
@@ -114,19 +149,21 @@ router.delete('/equipment/:id', async (req, res) => {
 });
 
 // ─── GET /api/stats ────────────────────────────────────────
-// Get dashboard statistics
-// Should return: total count, active count, maintenance count, decommissioned count
 router.get('/stats', async (req, res) => {
   try {
-    // TODO: Implement — query database for counts by status
+    const db = await getDatabase();
+    
+    const totalResult = await db.get('SELECT COUNT(*) as count FROM equipment');
+    const activeResult = await db.get("SELECT COUNT(*) as count FROM equipment WHERE status = 'Active'");
+    const maintenanceResult = await db.get("SELECT COUNT(*) as count FROM equipment WHERE status = 'Under Maintenance'");
+    const decommissionedResult = await db.get("SELECT COUNT(*) as count FROM equipment WHERE status = 'Decommissioned'");
 
     res.json({
-      message: 'TODO: Implement GET /api/stats',
       stats: {
-        total: 0,
-        active: 0,
-        underMaintenance: 0,
-        decommissioned: 0,
+        total: totalResult.count,
+        active: activeResult.count,
+        underMaintenance: maintenanceResult.count,
+        decommissioned: decommissionedResult.count,
       },
     });
   } catch (error) {
