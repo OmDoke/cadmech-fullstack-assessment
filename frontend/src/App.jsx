@@ -7,7 +7,7 @@ import Dashboard from './components/Dashboard';
 import EquipmentForm from './components/EquipmentForm';
 
 // Use the deployed backend URL
-export const API_BASE = 'https://backend-od.onrender.com/api';
+export const API_BASE = 'https://cadmech-api.onrender.com/api';
 
 function Sidebar() {
   return (
@@ -35,7 +35,7 @@ function Sidebar() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/cadmech-fullstack-assessment/">
       <div className="app-container">
         <Sidebar />
         <main className="main-content">
