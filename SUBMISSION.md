@@ -8,12 +8,12 @@
 
 | Field | Your Details |
 |-------|-------------|
-| **Full Name** | |
-| **Email** | |
-| **Phone** | |
-| **GitHub Username** | |
-| **LinkedIn (optional)** | |
-| **Current Location** | |
+| **Full Name** | Onkar Doke |
+| **Email** | [onkardoke9696@gmail.com] |
+| **Phone** | 7745042879|
+| **GitHub Username** | OmDoke |
+| **LinkedIn (optional)** | https://www.linkedin.com/in/onkar-doke |
+| **Current Location** | Pune |
 
 ---
 
@@ -21,9 +21,9 @@
 
 | Link | URL |
 |------|-----|
-| **GitHub Repo** (forked) | `https://github.com/YOUR-USERNAME/cadmech-fullstack-assessment` |
-| **Live Frontend** (GitHub Pages) | `https://YOUR-USERNAME.github.io/cadmech-fullstack-assessment` |
-| **Live Backend** (Render/Railway) | `https://your-backend-url.onrender.com` |
+| **GitHub Repo** (forked) | `https://github.com/OmDoke/cadmech-fullstack-assessment` |
+| **Live Frontend** (GitHub Pages) | `https://omdoke.github.io/cadmech-fullstack-assessment/` |
+| **Live Backend** (Render/Railway) | `https://cadmech-api.onrender.com` |
 
 ---
 
@@ -31,28 +31,28 @@
 
 | Choice | Your Answer |
 |--------|------------|
-| **Database Used** | MySQL / PostgreSQL / SQLite *(pick one)* |
-| **ORM / Query Builder** | *(e.g., Sequelize, Knex, raw SQL)* |
-| **Additional Frontend Libraries** | *(list all)* |
-| **Additional Backend Libraries** | *(list all)* |
-| **CSS Approach** | *(e.g., Vanilla CSS, CSS Modules, Tailwind)* |
+| **Database Used** | SQLite |
+| **ORM / Query Builder** | raw SQL |
+| **Additional Frontend Libraries** | lucide-react, react-router-dom |
+| **Additional Backend Libraries** | cors, dotenv, express, sqlite3 |
+| **CSS Approach** | Vanilla CSS |
 
 ---
 
 ## ✅ Features Implemented
 
-- [ ] Dashboard with summary statistics
-- [ ] Equipment list view (table/grid)
-- [ ] Add new equipment with validation
-- [ ] Edit existing equipment
-- [ ] Delete equipment with confirmation dialog
-- [ ] Search by name
-- [ ] Filter by type and/or status
-- [ ] Responsive design (desktop + mobile)
-- [ ] REST API with proper error handling
-- [ ] Database with schema
-- [ ] Frontend deployed to GitHub Pages
-- [ ] Backend deployed to Render/Railway
+- [x] Dashboard with summary statistics
+- [x] Equipment list view (table/grid)
+- [x] Add new equipment with validation
+- [x] Edit existing equipment
+- [x] Delete equipment with confirmation dialog
+- [x] Search by name
+- [x] Filter by type and/or status
+- [x] Responsive design (desktop + mobile)
+- [x] REST API with proper error handling
+- [x] Database with schema
+- [x] Frontend deployed to GitHub Pages
+- [x] Backend deployed to Render/Railway
 
 ---
 
@@ -60,19 +60,19 @@
 
 ### What went well?
 
-> *(2–3 sentences about what you're proud of)*
+> I was able to quickly understand the requirements and implement them effectively. The integration between the React frontend and the Node.js backend went smoothly, resulting in a cohesive user experience.
 
 ### What was the hardest part?
 
-> *(2–3 sentences — be specific. What got you stuck? How did you push through?)*
+> The hardest part was deploying the backend to Render, particularly dealing with the sqlite3 GLIBC compatibility error on newer Node.js versions. I pushed through by downgrading the Node.js version on Render to a stable 20 LTS version which had compatible glibc requirements.
 
 ### What would you do differently with more time?
 
-> *(2–3 sentences about improvements, refactors, or features you'd add)*
+> With more time, I would implement robust authentication and authorization to secure the equipment manager. I would also write a comprehensive suite of unit and integration tests for both the frontend and backend to ensure reliability.
 
 ### AI Tools Usage
 
-> *(Which tools did you use? For what tasks? What did you learn vs. what did AI generate?)*
+> I used AI assistants (like Gemini) to help troubleshoot the Render deployment error with `sqlite3` and `GLIBC`. The AI explained the root cause (glibc version mismatch) and suggested the correct fix of downgrading the Node.js version to 20 LTS via Render environment variables.
 
 ---
 
@@ -80,11 +80,11 @@
 
 | Area | Hours |
 |------|-------|
-| **Frontend UI/UX & Responsive Design** | |
-| **Backend API Development & DB** | |
-| **Deployment (FE + BE)** | |
-| **Documentation & Cleanup** | |
-| **Total** | |
+| **Frontend UI/UX & Responsive Design** | 2 hours |
+| **Backend API Development & DB** | 2 hours |
+| **Deployment (FE + BE)** | 1 hour |
+| **Documentation & Cleanup** | 1 hour |
+| **Total** | 6 hours |
 
 ---
 
@@ -95,6 +95,6 @@
 ---
 
 > **⚠️ Checklist before submitting:**
-> - [ ] All links are working and publicly accessible
-> - [ ] Code is pushed to your forked repo
-> - [ ] Commit history shows progressive development
+> - [x] All links are working and publicly accessible
+> - [x] Code is pushed to your forked repo
+> - [x] Commit history shows progressive development
